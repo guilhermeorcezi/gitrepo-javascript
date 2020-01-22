@@ -1,9 +1,9 @@
+import api from './api';
 
 class App{
     constructor(){
         this.repositories = [];
-        this.inputElement = document.querySelector('input');
-        this.buttonElement = document.querySelector('button');
+        this.inputElement = document.querySelector('input[name=repo]');
         this.listElement = document.querySelector('#repo-list');
         this.formElement = document.getElementById('repo-form');
 
@@ -14,17 +14,47 @@ class App{
         this.formElement.onsubmit = event => this.addRepository(event);
     }
 
-    addRepository(e){
-        e.preventDefault();
-        
-        this.repositories.push({
-            name: 'Rocketseat',
-            description: 'Mete o loco e finge algo importante aqui',
-            avatar_url: 'https://avatars1.githubusercontent.com/u/29787610?s=460&v=4',
-            html_url: 'https://github.com'
-        });
+    setLoading(loading = true){
+        if(loading === true){
+            let loadElement = document.createElement('span');
+            loadElement.appendChild(document.createTextNode('Carregando...'));
+            loadElement.setAttribute('id','loading');
 
-        this.render();
+            this.formElement.appendChild(loadElement);
+        }else{
+            document.getElementById('loading').remove();
+        }
+    }
+
+    async addRepository(e){
+        e.preventDefault();
+
+        const repoInput = this.inputElement.value;
+
+        if(repoInput.length === 0) return;
+
+        this.setLoading();
+
+        try{
+            const response = await api.get(`/repos/${repoInput}`)
+
+            const {name, description, html_url, owner: {avatar_url} } = response.data;
+
+            this.repositories.push({
+                name,
+                description,
+                avatar_url,
+                html_url
+            });
+
+            this.inputElement.value = '';
+            this.render();
+
+        }catch(err){
+            alert('Repositório inexistente');
+        }
+
+        this.setLoading(false);
     }   
 
     render(){
@@ -42,8 +72,8 @@ class App{
 
             let linkElement = document.createElement('a');
             linkElement.setAttribute('target','_blanket');
-            linkElement.setAttribute('href',`https://${repo.html_url}`);
-            linkElement.appendChild(document.createTextNode('Linsque'));
+            linkElement.setAttribute('href',`${repo.html_url}`);
+            linkElement.appendChild(document.createTextNode('Link do Projeto'));
 
             let liElement = document.createElement('li');
             liElement.appendChild(imgElement);
