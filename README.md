@@ -7,7 +7,8 @@
 ## Getting started
 
 ### Instalação - Backend
-To run the application set the command bellow and then click on the localhost/port at the terminal to open it on the browser (ex: http://localhost:8080/)
+To run the application set the commands bellow. First of all, "yarn" to get all the app' dependencies and "yarn dev" - then click on the localhost/port at the terminal to open it on the browser (ex: http://localhost:8080/)
 ```
-yarn dev
+yarn //  to get all the app'dependencies 
+yarn dev //  click on the localhost/port at the terminal to open it on the browser (ex: http://localhost:8080/)
 ```
